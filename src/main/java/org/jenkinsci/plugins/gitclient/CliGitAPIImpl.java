@@ -1518,7 +1518,10 @@ public class CliGitAPIImpl extends LegacyCompatibleGitAPIImpl {
         PrintWriter w = null;
         try {
             w = new PrintWriter(ssh);
-            w.println("echo \"" + Secret.toString(sshUser.getPassphrase()) + "\"");
+            // avoid echoing command as part of the password
+            w.println("@echo off");
+            // no need for quotes on windows echo -- they will get echoed too
+            w.println("echo " + Secret.toString(sshUser.getPassphrase()));
             w.flush();
         } finally {
             if (w != null) {
